@@ -60,3 +60,22 @@ AddEventHandler('wlv:unauthorizedUse', function(playerId, jobName, coords, image
         }), { ["Content-Type"] = "application/json" })
     end
 end)
+
+local CURRENT_VERSION = "1.0.0"
+local VERSION_URL = "https://raw.githubusercontent.com/YourGitHubUser/esx-unauthorized-vehicle-check/main/version.json"
+
+Citizen.CreateThread(function()
+    PerformHttpRequest(VERSION_URL, function(err, text, headers)
+        if err == 200 then
+            local data = json.decode(text)
+            if data.version and data.version ~= CURRENT_VERSION then
+                print("^1[UPDATE AVAILABLE]^7 A new version (" .. data.version .. ") of Unauthorized Vehicle Check is available.")
+                print("^1Download it here: ^7" .. data.download_url)
+            else
+                print("^2[VERSION CHECK]^7 You are using the latest version.")
+            end
+        else
+            print("^3[VERSION CHECK]^7 Could not check for updates.")
+        end
+    end, "GET")
+end)
